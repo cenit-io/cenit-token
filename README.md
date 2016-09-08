@@ -20,7 +20,7 @@ Or install it yourself as:
 
 ## Usage
 
-For now only the basic models are provides, which are based on the two primary modules `Cenit::Token` and `Cenit::TenantToken`
+For now only the basic models are provided, which are based on the two primary modules `Cenit::Token` and `Cenit::TenantToken`
 
 ## Development
 
