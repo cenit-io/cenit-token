@@ -14,10 +14,10 @@ module Cenit
     end
 
     included do
-      belongs_to Cenit::MultiTenancy.tenant_model_key, class_name: Cenit::MultiTenancy.tenant_model_name, inverse_of: nil
+      belongs_to :tenant, class_name: Cenit::MultiTenancy.tenant_model_name, inverse_of: nil
 
       before_create do
-        send("#{Cenit::MultiTenancy.tenant_model_key}=", Cenit::MultiTenancy.tenant_model.current_tenant)
+        self.tenant = Cenit::MultiTenancy.tenant_model.current_tenant
       end
     end
 
@@ -27,9 +27,9 @@ module Cenit
 
     def set_current_tenant(options = {})
       if Cenit::MultiTenancy.tenant_model.current.nil? || options[:force]
-        Cenit::MultiTenancy.tenant_model.current = send(Cenit::MultiTenancy.tenant_model_key)
+        Cenit::MultiTenancy.tenant_model.current = tenant
       end
-      send(Cenit::MultiTenancy.tenant_model_key)
+      tenant
     end
   end
 end
