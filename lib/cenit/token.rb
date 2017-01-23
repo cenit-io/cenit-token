@@ -33,11 +33,39 @@ module Cenit
       store_in collection: -> { Cenit::Token.collection_name }
 
       field :token, type: String
-      field :token_span, type: Integer, default: -> { self.class.default_token_span }
       field :data
+      field :expires_at, type: Time
+
+      after_initialize do
+        self.token_span ||= attributes.delete('token_span') ||
+          if created_at
+            expires_at && (expires_at - created_at)
+          else
+            self.class.default_token_span
+          end
+      end
+
+      def set_created_at
+        r = super
+        self.expires_at = token_span && (created_at + token_span)
+        r
+      end
 
       before_save :ensure_token
+    end
 
+    def token_span=(span)
+      span = span && span.abs
+      self.expires_at =
+        if (@token_span = span)
+          created_at && (created_at + span)
+        else
+          nil
+        end
+    end
+
+    def token_span
+      @token_span
     end
 
     def ensure_token
