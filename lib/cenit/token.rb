@@ -77,6 +77,14 @@ module Cenit
       token_span.nil?
     end
 
+    def alive?
+      expires_at.nil? || Time.now < expires_at
+    end
+
+    def expired?
+      !alive?
+    end
+
     module ClassMethods
 
       def token_length(*args)
