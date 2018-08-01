@@ -26,9 +26,14 @@ module Cenit
     end
 
     def set_current_tenant(options = {})
+      tenant = get_tenant
       if Cenit::MultiTenancy.tenant_model.current.nil? || options[:force]
         Cenit::MultiTenancy.tenant_model.current = tenant
       end
+      tenant
+    end
+
+    def get_tenant
       tenant
     end
   end
