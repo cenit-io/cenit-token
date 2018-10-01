@@ -91,7 +91,7 @@ module Cenit
         if (arg = args[0])
           @token_length = arg
         else
-          @token_length ||= 20
+          @token_length || (superclass < Cenit::Token ? superclass.token_length : 20)
         end
       end
 
@@ -99,7 +99,7 @@ module Cenit
         if (arg = args[0])
           @token_span = arg.to_i rescue nil
         else
-          @token_span
+          @token_span || (superclass < Cenit::Token ? superclass.default_token_span : nil)
         end
       end
 
