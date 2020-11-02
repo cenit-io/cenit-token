@@ -70,7 +70,6 @@ module Cenit
 
     def ensure_token
       self.token = Token.friendly(self.class.token_length) unless token.present?
-      true
     end
 
     def long_term?
