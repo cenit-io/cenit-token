@@ -37,17 +37,19 @@ module Cenit
       field :expires_at, type: Time
 
       after_initialize do
-        self.token_span ||= attributes.delete('token_span') ||
-          if created_at
-            expires_at && (expires_at - created_at)
-          else
-            self.class.default_token_span
-          end
+        unless token_span
+          self.token_span =
+            if created_at
+              expires_at && (expires_at - created_at)
+            else
+              self.class.default_token_span
+            end
+        end
       end
 
       def set_created_at
         r = super
-        self.expires_at = token_span && (created_at + token_span)
+        self.expires_at = (token_span && token_span > 0) && (created_at + token_span)
         r
       end
 
@@ -55,9 +57,10 @@ module Cenit
     end
 
     def token_span=(span)
-      span = span && span.abs
+      span = span&.abs
+      @token_span = span
       self.expires_at =
-        if (@token_span = span)
+        if span && span > 0
           created_at && (created_at + span)
         else
           nil
